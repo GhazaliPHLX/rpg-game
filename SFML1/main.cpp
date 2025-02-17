@@ -1,29 +1,37 @@
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
 
 int main() {
 
 	//--------------------------INITIALIZE-------------------------------
-	sf::RenderWindow window(sf::VideoMode({ 800, 600 }), "Kuru Kuru");
-	//Drawing a Circle
-	sf::CircleShape circle1(70.f);
-	circle1.setOrigin({ 70.f, 70.f });	
-	circle1.setFillColor(sf::Color::Red);
-	circle1.setPosition(sf::Vector2f(400, 300));
-	circle1.setOutlineThickness(10);
-	circle1.setOutlineColor(sf::Color::Cyan);
-
-	//Drawing a Rectangle
-	sf::RectangleShape rect({ 400.f, 50.f });
-	rect.setFillColor(sf::Color(70, 130, 180));
-	rect.setOrigin(sf::Vector2f(rect.getSize().x / 2, rect.getSize().y / 2));
-	rect.setRotation(sf::degrees(45));
-	rect.setPosition(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2));
-
-	//Drawing Lines
-
-
+	sf::ContextSettings settings;
+	settings.antiAliasingLevel = 8;
+	sf::RenderWindow window(sf::VideoMode({ 800, 600 }), "Kuru Kuru", sf::Style::Default, sf::State::Windowed, settings);
+	
 	//--------------------------INITIALIZE-------------------------------
+	//--------------------------LOAD-------------------------------------
+	sf::Texture playerTexture;
+	
+
+	if (playerTexture.loadFromFile("Assets/Player/Textures/spriteSheet.png")) {
+		std::cout << "Texture loaded succesfully" << std::endl;
+	}
+	else {
+		std::cout << "Texture load failed" << std::endl;
+	}
+
+	sf::Sprite playerSprite(playerTexture);
+
+	//Set Kotak Texture yang dijadikan sprite {x,y}{width, height}
+	int XIndex = 0;
+	int YIndex = 0;
+
+	playerSprite.setTextureRect(sf::IntRect({ XIndex * 64,YIndex * 64 },{64,64}));
+
+	//--------------------------LOAD-------------------------------------
+
+
 
 
 	//Main Game Loop (Wajib meimiliki fungsi Update dan Draw) (Ini adalah 1 Frame)
@@ -36,13 +44,28 @@ int main() {
 			//Kondisi untuk close windows
 			if (event->is<sf::Event::Closed>())
 				window.close();	
+
 		}
+
+		// Gk boleh di dalam Update loop
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) 			
+			playerSprite.move(sf::Vector2f(0,-0.1));
+		
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) 
+			playerSprite.move(sf::Vector2f(-0.1, 0));
+		
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) 
+			playerSprite.move(sf::Vector2f(0, 0.1));
+		
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) 
+			playerSprite.move(sf::Vector2f(0.1, 0));
+		
 		//----------------------UPDATE--------------------------
 
 		//----------------------DRAW----------------------------
-		window.clear(sf::Color::White);
+		window.clear(sf::Color::Black);
 		
-		window.draw(rect);
+		window.draw(playerSprite);
 
 		window.display();
 		//----------------------DRAW----------------------------
